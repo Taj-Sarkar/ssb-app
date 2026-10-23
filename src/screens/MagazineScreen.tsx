@@ -1,26 +1,49 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Search, Lock, BookOpen, Sparkles, Calendar, Tag, RefreshCw } from 'lucide-react';
+import { Search, Lock, BookOpen, Sparkles, Calendar, Tag, RefreshCw, WifiOff } from 'lucide-react';
 import { api, MagazinePdf } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { PdfReaderModal } from '../components/PdfReaderModal';
 
 export const MagazineScreen: React.FC = () => {
   const { user, isAuthenticated, openLoginModal } = useAuth();
-  const [magazines, setMagazines] = useState<MagazinePdf[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [magazines, setMagazines] = useState<MagazinePdf[]>(() => {
+    try {
+      const cached = localStorage.getItem('cached_magazines');
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activePdf, setActivePdf] = useState<{ url: string; title: string } | null>(null);
 
   const categories = ['All', 'Magazine', 'Books', 'SSBPrep'];
 
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   const fetchMagazines = async () => {
     try {
       setIsLoading(true);
       const data = await api.getMagazines();
-      setMagazines(Array.isArray(data) ? data : []);
+      if (Array.isArray(data) && data.length > 0) {
+        setMagazines(data);
+        localStorage.setItem('cached_magazines', JSON.stringify(data));
+      }
     } catch (e) {
-      console.warn('Failed to load magazines:', e);
+      console.warn('Network issue fetching magazines, using cache:', e);
+      setIsOffline(true);
     } finally {
       setIsLoading(false);
     }
@@ -53,12 +76,25 @@ export const MagazineScreen: React.FC = () => {
 
   return (
     <div className="screen-container">
+      {/* Offline Alert Bar */}
+      {isOffline && (
+        <div className="offline-banner">
+          <WifiOff size={14} color="#f59e0b" />
+          <span>Offline Mode: Displaying saved dossiers</span>
+        </div>
+      )}
+
       {/* Banner */}
       <div className="magazine-hero">
         <div className="hero-content">
-          <div className="badge-gold">
-            <Sparkles size={12} />
-            <span>Fortnightly Intelligence</span>
+          <div className="hero-top-row">
+            <div className="badge-gold">
+              <Sparkles size={12} />
+              <span>Fortnightly Intelligence</span>
+            </div>
+            <button className="sync-btn" onClick={fetchMagazines} title="Refresh Dossiers">
+              <RefreshCw size={14} className={isLoading ? 'spin-icon' : ''} />
+            </button>
           </div>
           <h2 className="hero-title">Roger That Magazine</h2>
           <p className="hero-desc">
@@ -108,7 +144,7 @@ export const MagazineScreen: React.FC = () => {
 
       {/* Magazine Grid */}
       <div className="magazine-grid">
-        {isLoading ? (
+        {isLoading && magazines.length === 0 ? (
           <div className="loading-state">
             <RefreshCw size={24} className="spin-icon" color="#d4af37" />
             <p>Fetching Roger That issues...</p>
@@ -116,7 +152,7 @@ export const MagazineScreen: React.FC = () => {
         ) : filteredMagazines.length === 0 ? (
           <div className="empty-state">
             <BookOpen size={36} color="#6e6c64" />
-            <p>No magazine issues match your search.</p>
+            <p>No magazine issues found.</p>
           </div>
         ) : (
           filteredMagazines.map((item) => {
@@ -124,7 +160,7 @@ export const MagazineScreen: React.FC = () => {
             return (
               <div key={item._id} className="magazine-card glass-card gold-trim" onClick={() => handleReadPdf(item)}>
                 <div className="card-thumb-wrap">
-                  <img src={coverUrl} alt={item.pdfTitle} className="card-thumb" />
+                  <img src={coverUrl} alt={item.pdfTitle} className="card-thumb" loading="lazy" />
                   {!isAuthenticated && (
                     <div className="thumb-lock-overlay">
                       <Lock size={20} color="#f5c518" />
@@ -174,6 +210,19 @@ export const MagazineScreen: React.FC = () => {
         .screen-container {
           padding: 16px 18px 24px 18px;
         }
+        .offline-banner {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background: rgba(245, 158, 11, 0.15);
+          border: 1px solid rgba(245, 158, 11, 0.4);
+          color: #fcd34d;
+          font-size: 11.5px;
+          font-weight: 600;
+          padding: 7px 12px;
+          border-radius: var(--radius-sm);
+          margin-bottom: 12px;
+        }
         .magazine-hero {
           background: linear-gradient(135deg, rgba(39, 66, 47, 0.4) 0%, rgba(14, 14, 14, 0.9) 100%);
           border: 1px solid var(--border-gold);
@@ -182,6 +231,27 @@ export const MagazineScreen: React.FC = () => {
           margin-bottom: 16px;
           position: relative;
           overflow: hidden;
+        }
+        .hero-top-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .sync-btn {
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid var(--border-subtle);
+          color: var(--text-secondary);
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+        .sync-btn:active {
+          background: var(--gold-muted);
+          color: var(--gold-bright);
         }
         .hero-title {
           font-size: 22px;

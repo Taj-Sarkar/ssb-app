@@ -1,10 +1,10 @@
 ﻿import React, { useState } from 'react';
-import { Compass, Play, CheckCircle2, Shield, Eye, Target, Zap, Volume2, VolumeX } from 'lucide-react';
+import { Compass, Volume2, VolumeX, CheckCircle2, Target, Zap } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Haptics, NotificationType } from '@capacitor/haptics';
+import { VtxTacticalPreview } from '../components/VtxTacticalPreview';
 
 export const VtxScreen: React.FC = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [hasPreRegistered, setHasPreRegistered] = useState(() => {
     return localStorage.getItem('vtx_preregistered') === 'true';
@@ -74,6 +74,9 @@ export const VtxScreen: React.FC = () => {
           <p>Created by an ex-GTO, blending actual board assessment metrics with interactive 3D physics.</p>
         </div>
       </div>
+
+      {/* Interactive 3D Tactical Sand-Model Preview */}
+      <VtxTacticalPreview />
 
       {/* Pre-registration Call to Action */}
       <div className="preregister-box glass-card">
