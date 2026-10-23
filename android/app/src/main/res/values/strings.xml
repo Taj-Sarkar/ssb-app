@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SSB with ISV</string>
+    <string name="title_activity_main">SSB with ISV</string>
+    <string name="package_name">in.ssbwithisv.app</string>
+    <string name="custom_url_scheme">in.ssbwithisv.app</string>
+</resources>

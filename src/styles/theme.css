@@ -1,0 +1,195 @@
+﻿:root {
+  --bg-primary: #070707;
+  --bg-secondary: #0e0e0e;
+  --bg-card: #141414;
+  --bg-card-hover: #1a1a1a;
+  --bg-glass: rgba(18, 18, 18, 0.82);
+
+  --gold-primary: #d4af37;
+  --gold-bright: #f5c518;
+  --gold-dark: #8c6f1a;
+  --gold-muted: rgba(212, 175, 55, 0.18);
+  --gold-glow: rgba(245, 197, 24, 0.28);
+  --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f5c518 50%, #c4961d 100%);
+
+  --olive-primary: #27422f;
+  --olive-light: #3e6b4b;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+
+  --text-primary: #f8f6f0;
+  --text-secondary: #a3a199;
+  --text-muted: #6e6c64;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-gold: rgba(212, 175, 55, 0.25);
+  --border-gold-bright: rgba(245, 197, 24, 0.6);
+
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  user-select: none;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+/* App Shell Layout */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 520px;
+  margin: 0 auto;
+  position: relative;
+  background-color: var(--bg-secondary);
+  border-left: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+.main-content {
+  flex: 1;
+  padding-bottom: calc(85px + var(--safe-bottom));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-dark);
+}
+
+/* Glass Card */
+.glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:active {
+  transform: scale(0.985);
+}
+
+.glass-card.gold-trim {
+  border-color: var(--border-gold);
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.05) 0%, var(--bg-card) 100%);
+}
+
+/* Primary Button */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--gold-gradient);
+  color: #070707;
+  font-family: var(--font-heading);
+  font-size: 14.5px;
+  font-weight: 700;
+  padding: 12px 22px;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-gold);
+  transition: all 0.2s ease;
+  letter-spacing: 0.02em;
+}
+
+.btn-gold:active {
+  transform: scale(0.96);
+  filter: brightness(0.9);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--gold-primary);
+  border: 1px solid var(--border-gold);
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 11px 20px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-outline:active {
+  background: var(--gold-muted);
+  transform: scale(0.96);
+}
+
+/* Badge */
+.badge-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: var(--gold-muted);
+  border: 1px solid var(--border-gold);
+  color: var(--gold-bright);
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.badge-olive {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: rgba(39, 66, 47, 0.4);
+  border: 1px solid rgba(62, 107, 75, 0.4);
+  color: #7ee7a4;
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+}
