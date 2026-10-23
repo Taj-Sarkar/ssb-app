@@ -6,23 +6,24 @@ import { AuthProvider } from './context/AuthContext';
 import { Header } from './components/Header';
 import { BottomNav, TabType } from './components/BottomNav';
 import { LoginModal } from './components/LoginModal';
+import { HomeScreen } from './screens/HomeScreen';
 import { MagazineScreen } from './screens/MagazineScreen';
 import { VtxScreen } from './screens/VtxScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 
 const MainApp: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('magazine');
+  const [activeTab, setActiveTab] = useState<TabType>('home');
 
   // Handle native mobile lifecycle & back button
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
       StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
-      StatusBar.setBackgroundColor({ color: '#0b0b0b' }).catch(() => {});
+      StatusBar.setBackgroundColor({ color: '#121212' }).catch(() => {});
 
       const backListener = CapApp.addListener('backButton', ({ canGoBack }) => {
-        if (activeTab !== 'magazine') {
-          setActiveTab('magazine');
+        if (activeTab !== 'home') {
+          setActiveTab('home');
         } else if (canGoBack) {
           window.history.back();
         } else {
@@ -41,6 +42,7 @@ const MainApp: React.FC = () => {
       <Header />
 
       <main className="main-content">
+        {activeTab === 'home' && <HomeScreen onNavigate={setActiveTab} />}
         {activeTab === 'magazine' && <MagazineScreen />}
         {activeTab === 'vtx' && <VtxScreen />}
         {activeTab === 'profile' && <ProfileScreen />}

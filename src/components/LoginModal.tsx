@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { X, Lock, Mail, Phone, Eye, EyeOff, ShieldCheck, Fingerprint, AlertCircle } from 'lucide-react';
+import { X, Lock, Mail, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const LoginModal: React.FC = () => {
@@ -31,35 +31,35 @@ export const LoginModal: React.FC = () => {
   };
 
   return (
-    <div className="modal-backdrop" onClick={closeLoginModal}>
-      <div className="login-sheet" onClick={(e) => e.stopPropagation()}>
-        <div className="sheet-handle" />
+    <div className="google-modal-scrim" onClick={closeLoginModal}>
+      <div className="google-login-sheet" onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-drag-handle" />
 
-        <div className="sheet-header">
-          <div className="sheet-icon">
-            <ShieldCheck size={26} color="#f5c518" />
+        <div className="sheet-top-row">
+          <div className="sheet-brand">
+            <img src="/assets/logo/logo.png" alt="Logo" className="sheet-logo" />
+            <div>
+              <h2 className="sheet-heading">Sign In with SSB with ISV</h2>
+              <p className="sheet-sub">Access full Roger That dossiers & VTX</p>
+            </div>
           </div>
-          <div>
-            <h2 className="sheet-title">Cadet Authentication</h2>
-            <p className="sheet-desc">Sign in to unlock full magazine issues & VTX Ground</p>
-          </div>
-          <button className="close-btn" onClick={closeLoginModal} aria-label="Close">
+          <button className="sheet-close-btn" onClick={closeLoginModal} aria-label="Close">
             <X size={20} />
           </button>
         </div>
 
         {error && (
-          <div className="error-alert">
-            <AlertCircle size={17} color="#ef4444" />
+          <div className="error-chip">
+            <AlertCircle size={16} color="#ef4444" />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="input-field">
+        <form onSubmit={handleSubmit} className="google-form">
+          <div className="m3-text-field">
             <label>Phone Number or Email</label>
-            <div className="input-wrap">
-              <Mail size={18} className="field-icon" />
+            <div className="field-input-box">
+              <Mail size={17} className="input-icon" />
               <input
                 type="text"
                 placeholder="e.g. 9876543210 or cadet@isv.in"
@@ -70,44 +70,42 @@ export const LoginModal: React.FC = () => {
             </div>
           </div>
 
-          <div className="input-field">
+          <div className="m3-text-field">
             <label>Password</label>
-            <div className="input-wrap">
-              <Lock size={18} className="field-icon" />
+            <div className="field-input-box">
+              <Lock size={17} className="input-icon" />
               <input
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Enter your password"
+                placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 type="button"
-                className="eye-toggle"
+                className="eye-btn"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label="Toggle password"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
               </button>
             </div>
           </div>
 
-          <button type="submit" className="btn-gold login-submit-btn" disabled={isSubmitting}>
-            {isSubmitting ? 'Verifying Credentials...' : 'Sign In as Cadet'}
+          <button type="submit" className="m3-btn-primary form-submit-btn" disabled={isSubmitting}>
+            {isSubmitting ? 'Verifying...' : 'Sign In'}
           </button>
         </form>
 
-        <div className="sheet-footer">
-          <p className="footer-note">
-            Enrolled in a batch or purchased on web? Use your registered credentials.
-          </p>
+        <div className="sheet-bottom-note">
+          <p>Enrolled on web? Use your registered credentials.</p>
         </div>
       </div>
 
       <style>{`
-        .modal-backdrop {
+        .google-modal-scrim {
           position: fixed;
           inset: 0;
-          background: rgba(0, 0, 0, 0.75);
+          background: rgba(0, 0, 0, 0.72);
           backdrop-filter: blur(8px);
           -webkit-backdrop-filter: blur(8px);
           display: flex;
@@ -115,138 +113,131 @@ export const LoginModal: React.FC = () => {
           justify-content: center;
           z-index: 1000;
         }
-        .login-sheet {
-          background: #121212;
+        .google-login-sheet {
+          background: var(--m3-surface);
           width: 100%;
           max-width: 520px;
-          border-top: 1px solid var(--border-gold);
-          border-radius: 24px 24px 0 0;
-          padding: 12px 22px calc(var(--safe-bottom) + 24px) 22px;
-          box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
-          animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          border-top: 1px solid var(--m3-outline);
+          border-radius: var(--m3-shape-corner-xl) var(--m3-shape-corner-xl) 0 0;
+          padding: 12px 22px calc(var(--safe-bottom) + 26px) 22px;
+          animation: slideSheet 0.25s cubic-bezier(0.2, 0, 0, 1);
         }
-        @keyframes slideUp {
+        @keyframes slideSheet {
           from { transform: translateY(100%); }
           to { transform: translateY(0); }
         }
-        .sheet-handle {
-          width: 42px;
+        .sheet-drag-handle {
+          width: 36px;
           height: 4px;
-          background: rgba(255, 255, 255, 0.2);
+          background: var(--m3-outline);
           border-radius: 99px;
           margin: 0 auto 16px auto;
         }
-        .sheet-header {
+        .sheet-top-row {
           display: flex;
           align-items: center;
-          gap: 14px;
+          justify-content: space-between;
           margin-bottom: 20px;
-          position: relative;
         }
-        .sheet-icon {
-          width: 48px;
-          height: 48px;
-          border-radius: 14px;
-          background: rgba(212, 175, 55, 0.12);
-          border: 1px solid var(--border-gold);
+        .sheet-brand {
           display: flex;
           align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
+          gap: 12px;
         }
-        .sheet-title {
-          font-size: 19px;
+        .sheet-logo {
+          width: 38px;
+          height: 38px;
+          object-fit: contain;
+          border-radius: 8px;
+        }
+        .sheet-heading {
+          font-size: 17px;
           font-weight: 700;
-          color: var(--text-primary);
+          color: var(--m3-text-high);
         }
-        .sheet-desc {
+        .sheet-sub {
           font-size: 12px;
-          color: var(--text-secondary);
+          color: var(--m3-text-medium);
           margin-top: 2px;
         }
-        .close-btn {
-          position: absolute;
-          right: 0;
-          top: 0;
+        .sheet-close-btn {
           background: none;
           border: none;
-          color: var(--text-muted);
+          color: var(--m3-text-low);
           cursor: pointer;
-          padding: 6px;
+          padding: 4px;
         }
-        .error-alert {
+        .error-chip {
           display: flex;
           align-items: center;
-          gap: 9px;
+          gap: 8px;
           background: rgba(239, 68, 68, 0.12);
-          border: 1px solid rgba(239, 68, 68, 0.35);
+          border: 1px solid rgba(239, 68, 68, 0.3);
           color: #fca5a5;
           font-size: 12.5px;
           padding: 10px 14px;
-          border-radius: var(--radius-md);
+          border-radius: var(--m3-shape-corner-md);
           margin-bottom: 16px;
         }
-        .login-form {
+        .google-form {
           display: flex;
           flex-direction: column;
           gap: 16px;
         }
-        .input-field label {
+        .m3-text-field label {
           display: block;
-          font-size: 12px;
+          font-size: 11.5px;
           font-weight: 600;
-          color: var(--text-secondary);
+          color: var(--m3-text-medium);
           margin-bottom: 6px;
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
+          letter-spacing: 0.02em;
         }
-        .input-wrap {
+        .field-input-box {
           display: flex;
           align-items: center;
-          background: #1c1c1c;
-          border: 1px solid var(--border-subtle);
-          border-radius: var(--radius-md);
+          background: var(--m3-surface-container-high);
+          border: 1px solid var(--m3-outline);
+          border-radius: var(--m3-shape-corner-lg);
           padding: 0 14px;
           transition: border-color 0.2s ease;
         }
-        .input-wrap:focus-within {
-          border-color: var(--gold-bright);
+        .field-input-box:focus-within {
+          border-color: var(--m3-primary);
         }
-        .field-icon {
-          color: var(--text-muted);
+        .input-icon {
+          color: var(--m3-text-low);
           margin-right: 10px;
         }
-        .input-wrap input {
+        .field-input-box input {
           flex: 1;
           background: none;
           border: none;
           outline: none;
-          color: var(--text-primary);
+          color: var(--m3-text-high);
           font-size: 14.5px;
           padding: 14px 0;
           font-family: var(--font-body);
         }
-        .eye-toggle {
+        .eye-btn {
           background: none;
           border: none;
-          color: var(--text-muted);
+          color: var(--m3-text-low);
           cursor: pointer;
           padding: 4px;
         }
-        .login-submit-btn {
+        .form-submit-btn {
           width: 100%;
-          padding: 15px;
-          font-size: 15.5px;
-          margin-top: 6px;
+          padding: 14px;
+          font-size: 14.5px;
+          margin-top: 4px;
         }
-        .sheet-footer {
-          margin-top: 18px;
+        .sheet-bottom-note {
+          margin-top: 16px;
           text-align: center;
         }
-        .footer-note {
+        .sheet-bottom-note p {
           font-size: 11.5px;
-          color: var(--text-muted);
-          line-height: 1.4;
+          color: var(--m3-text-low);
         }
       `}</style>
     </div>

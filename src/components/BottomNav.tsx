@@ -1,8 +1,8 @@
 ﻿import React from 'react';
-import { BookOpen, Compass, UserCheck, Settings } from 'lucide-react';
+import { Home, BookOpen, Compass, UserCheck, Settings } from 'lucide-react';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
-export type TabType = 'magazine' | 'vtx' | 'profile' | 'settings';
+export type TabType = 'home' | 'magazine' | 'vtx' | 'profile' | 'settings';
 
 interface BottomNavProps {
   activeTab: TabType;
@@ -11,8 +11,9 @@ interface BottomNavProps {
 
 export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) => {
   const tabs = [
+    { id: 'home' as TabType, label: 'Home', icon: Home },
     { id: 'magazine' as TabType, label: 'Magazine', icon: BookOpen },
-    { id: 'vtx' as TabType, label: 'VTX 3D', icon: Compass, badge: 'SOON' },
+    { id: 'vtx' as TabType, label: 'VTX', icon: Compass, badge: 'SOON' },
     { id: 'profile' as TabType, label: 'Profile', icon: UserCheck },
     { id: 'settings' as TabType, label: 'Settings', icon: Settings },
   ];
@@ -25,31 +26,31 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
   };
 
   return (
-    <nav className="bottom-nav">
-      <div className="nav-container">
+    <nav className="m3-bottom-nav">
+      <div className="m3-nav-container">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
           return (
             <button
               key={tab.id}
-              className={`nav-tab ${isActive ? 'active' : ''}`}
+              className={`m3-tab-item ${isActive ? 'active' : ''}`}
               onClick={() => handleSelect(tab.id)}
               aria-label={tab.label}
             >
-              <div className="tab-icon-wrap">
-                <Icon size={21} strokeWidth={isActive ? 2.4 : 1.8} />
-                {tab.badge && <span className="tab-badge">{tab.badge}</span>}
+              <div className="m3-icon-wrapper">
+                <div className="m3-active-pill" />
+                <Icon size={20} className="m3-tab-icon" />
+                {tab.badge && <span className="m3-badge-pill">{tab.badge}</span>}
               </div>
-              <span className="tab-label">{tab.label}</span>
-              {isActive && <div className="active-pill" />}
+              <span className="m3-tab-text">{tab.label}</span>
             </button>
           );
         })}
       </div>
 
       <style>{`
-        .bottom-nav {
+        .m3-bottom-nav {
           position: fixed;
           bottom: 0;
           left: 50%;
@@ -57,67 +58,82 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
           width: 100%;
           max-width: 520px;
           z-index: 99;
-          padding: 8px 16px calc(var(--safe-bottom) + 8px) 16px;
-          background: rgba(11, 11, 11, 0.92);
-          backdrop-filter: blur(24px);
-          -webkit-backdrop-filter: blur(24px);
-          border-top: 1px solid var(--border-subtle);
+          padding: 8px 10px calc(var(--safe-bottom) + 8px) 10px;
+          background: rgba(18, 18, 18, 0.95);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-top: 1px solid var(--m3-outline);
         }
-        .nav-container {
+        .m3-nav-container {
           display: flex;
           align-items: center;
           justify-content: space-around;
         }
-        .nav-tab {
+        .m3-tab-item {
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           background: none;
           border: none;
-          color: var(--text-muted);
+          color: var(--m3-text-low);
           cursor: pointer;
           position: relative;
-          padding: 6px 12px;
-          border-radius: var(--radius-md);
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          padding: 2px 4px;
           flex: 1;
+          transition: color 0.15s ease;
         }
-        .nav-tab.active {
-          color: var(--gold-bright);
+        .m3-tab-item.active {
+          color: var(--m3-text-high);
         }
-        .tab-icon-wrap {
+        .m3-icon-wrapper {
           position: relative;
+          width: 54px;
+          height: 30px;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-bottom: 3px;
+          margin-bottom: 2px;
         }
-        .tab-label {
+        .m3-active-pill {
+          position: absolute;
+          inset: 0;
+          border-radius: var(--m3-shape-corner-full);
+          background: transparent;
+          transition: background 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+        .m3-tab-item.active .m3-active-pill {
+          background: var(--m3-primary-container);
+        }
+        .m3-tab-icon {
+          position: relative;
+          z-index: 2;
+          transition: transform 0.15s ease;
+        }
+        .m3-tab-item.active .m3-tab-icon {
+          color: var(--m3-primary);
+        }
+        .m3-tab-text {
+          font-family: var(--font-family);
           font-size: 11px;
           font-weight: 600;
           letter-spacing: 0.02em;
         }
-        .tab-badge {
-          position: absolute;
-          top: -6px;
-          right: -16px;
-          background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
-          color: #ffffff;
-          font-size: 8px;
-          font-weight: 800;
-          padding: 1px 5px;
-          border-radius: 99px;
-          letter-spacing: 0.04em;
+        .m3-tab-item.active .m3-tab-text {
+          color: var(--m3-primary);
+          font-weight: 700;
         }
-        .active-pill {
+        .m3-badge-pill {
           position: absolute;
-          bottom: -4px;
-          width: 18px;
-          height: 3px;
-          background: var(--gold-bright);
+          top: -2px;
+          right: 4px;
+          background: #ef4444;
+          color: #fff;
+          font-size: 7.5px;
+          font-weight: 800;
+          padding: 1px 4px;
           border-radius: 99px;
-          box-shadow: 0 0 10px var(--gold-bright);
+          z-index: 3;
         }
       `}</style>
     </nav>

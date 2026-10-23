@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { User, Shield, Award, Calendar, Phone, Mail, CheckCircle2, ChevronRight, LogIn } from 'lucide-react';
+import { User, Shield, CheckCircle2, Phone, Mail, LogIn, Award } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const ProfileScreen: React.FC = () => {
@@ -7,54 +7,51 @@ export const ProfileScreen: React.FC = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="screen-container">
-        <div className="auth-prompt-card glass-card gold-trim">
-          <div className="prompt-icon-wrap">
-            <Shield size={38} color="#f5c518" />
+      <div className="profile-container">
+        <div className="m3-card unauth-card">
+          <div className="unauth-icon-wrap">
+            <User size={36} color="#f2c94c" />
           </div>
-          <h2>Cadet Profile & Dossier</h2>
-          <p>Sign in to view your enrolled batch timings, mentor assignments, and psychological evaluation reports.</p>
-          <button className="btn-gold prompt-login-btn" onClick={openLoginModal}>
+          <h2>Cadet Profile & Records</h2>
+          <p>Sign in to view your batch enrollment, assigned GTO & Psychologist faculty, and training dossiers.</p>
+          <button className="m3-btn-primary" onClick={openLoginModal}>
             <LogIn size={16} />
-            <span>Sign In to Access Profile</span>
+            <span>Sign In as Cadet</span>
           </button>
         </div>
 
         <style>{`
-          .screen-container { padding: 16px 18px 24px 18px; }
-          .auth-prompt-card {
+          .profile-container { padding: 16px 18px 24px 18px; }
+          .unauth-card {
             text-align: center;
-            padding: 48px 24px;
-            margin-top: 40px;
+            padding: 44px 24px;
+            margin-top: 36px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
           }
-          .prompt-icon-wrap {
-            width: 72px;
-            height: 72px;
-            border-radius: 20px;
-            background: rgba(212, 175, 55, 0.12);
-            border: 1px solid var(--border-gold);
+          .unauth-icon-wrap {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: var(--m3-primary-container);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px auto;
+            margin-bottom: 18px;
           }
-          .auth-prompt-card h2 {
-            font-size: 21px;
-            font-weight: 800;
-            color: var(--text-primary);
+          .unauth-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--m3-text-high);
             margin-bottom: 8px;
           }
-          .auth-prompt-card p {
+          .unauth-card p {
             font-size: 13px;
-            color: var(--text-secondary);
+            color: var(--m3-text-medium);
             line-height: 1.5;
-            max-width: 300px;
-            margin: 0 auto 24px auto;
-          }
-          .prompt-login-btn {
-            width: 100%;
-            max-width: 280px;
-            margin: 0 auto;
+            max-width: 290px;
+            margin-bottom: 24px;
           }
         `}</style>
       </div>
@@ -62,219 +59,204 @@ export const ProfileScreen: React.FC = () => {
   }
 
   return (
-    <div className="screen-container">
-      {/* Cadet ID Card */}
-      <div className="cadet-id-card">
-        <div className="id-watermark">SSB</div>
-        <div className="id-header">
-          <div className="id-brand">
-            <Shield size={16} color="#f5c518" />
-            <span>OFFICIAL CADET CREDENTIAL</span>
+    <div className="profile-container">
+      {/* Google Account Style Profile Card */}
+      <div className="m3-card profile-id-card">
+        <div className="profile-top-row">
+          <div className="profile-avatar-circle">
+            {user?.name?.charAt(0).toUpperCase() || 'C'}
           </div>
-          <span className="badge-olive">ACTIVE</span>
+          <div className="profile-main-meta">
+            <h2 className="profile-display-name">{user?.name}</h2>
+            <span className="profile-role-tag">{user?.role?.toUpperCase() || 'ASPIRANT'}</span>
+          </div>
         </div>
 
-        <div className="id-body">
-          <div className="id-avatar">
-            <User size={36} color="#d4af37" />
-          </div>
-          <div className="id-details">
-            <h2 className="cadet-full-name">{user?.name}</h2>
-            <p className="cadet-role">SSB Aspirant • {user?.role?.toUpperCase() || 'STUDENT'}</p>
-            <div className="cadet-contact">
-              {user?.email && (
-                <span className="contact-item">
-                  <Mail size={12} /> {user.email}
-                </span>
-              )}
-              {user?.phone && (
-                <span className="contact-item">
-                  <Phone size={12} /> {user.phone}
-                </span>
-              )}
+        <div className="profile-contact-list">
+          {user?.email && (
+            <div className="contact-row">
+              <Mail size={15} color="#8e8e8e" />
+              <span>{user.email}</span>
             </div>
-          </div>
+          )}
+          {user?.phone && (
+            <div className="contact-row">
+              <Phone size={15} color="#8e8e8e" />
+              <span>{user.phone}</span>
+            </div>
+          )}
         </div>
 
-        <div className="id-footer">
-          <div className="id-stat">
-            <span className="stat-label">INSTITUTION</span>
-            <span className="stat-val">SSB with ISV</span>
+        <div className="profile-card-footer">
+          <div className="badge-item">
+            <span className="badge-lbl">ACADEMY</span>
+            <span className="badge-val">SSB with ISV</span>
           </div>
-          <div className="id-stat">
-            <span className="stat-label">VTX CLEARANCE</span>
-            <span className="stat-val text-gold">Level 1 • Beta</span>
+          <div className="badge-item">
+            <span className="badge-lbl">VTX ACCESS</span>
+            <span className="badge-val highlight">Level 1 • Beta</span>
           </div>
         </div>
       </div>
 
-      {/* Mentor Support Card */}
-      <div className="section-header">
-        <h3 className="section-title">Assigned Assessment Faculty</h3>
-      </div>
+      {/* Mentorship Faculty Card */}
+      <div className="profile-section">
+        <h3 className="section-title">Assigned Assessment Mentors</h3>
 
-      <div className="mentor-card glass-card">
-        <div className="mentor-row">
-          <div className="mentor-avatar">GTO</div>
-          <div className="mentor-info">
-            <h4>Group Testing Officer (GTO)</h4>
-            <p>Assessor-led tactical feedback & VTX ground clearance</p>
+        <div className="m3-card mentors-card">
+          <div className="mentor-item">
+            <div className="mentor-tag-circle">GTO</div>
+            <div className="mentor-details">
+              <h4>Group Testing Faculty</h4>
+              <p>Tactical tasks, PGT, HGT, and outdoor obstacle mentoring</p>
+            </div>
+            <CheckCircle2 size={18} color="#22c55e" />
           </div>
-          <CheckCircle2 size={18} color="#22c55e" />
-        </div>
 
-        <div className="mentor-divider" />
+          <div className="mentor-divider" />
 
-        <div className="mentor-row">
-          <div className="mentor-avatar">PSY</div>
-          <div className="mentor-info">
-            <h4>Psychologist Faculty</h4>
-            <p>TAT, WAT, SRT & Self-Description battery evaluations</p>
+          <div className="mentor-item">
+            <div className="mentor-tag-circle">PSY</div>
+            <div className="mentor-details">
+              <h4>Psychologist Faculty</h4>
+              <p>TAT, WAT, SRT & Self-Description test evaluations</p>
+            </div>
+            <CheckCircle2 size={18} color="#22c55e" />
           </div>
-          <CheckCircle2 size={18} color="#22c55e" />
         </div>
       </div>
 
       <style>{`
-        .screen-container { padding: 16px 18px 24px 18px; }
-        .cadet-id-card {
-          background: linear-gradient(135deg, #1b261d 0%, #0d120e 60%, #151515 100%);
-          border: 1px solid var(--border-gold);
-          border-radius: var(--radius-lg);
-          padding: 20px;
-          position: relative;
-          overflow: hidden;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.15);
-          margin-bottom: 22px;
-        }
-        .id-watermark {
-          position: absolute;
-          right: -10px;
-          bottom: -20px;
-          font-family: var(--font-heading);
-          font-size: 110px;
-          font-weight: 900;
-          color: rgba(255, 255, 255, 0.02);
-          pointer-events: none;
-        }
-        .id-header {
+        .profile-container {
+          padding: 16px 18px 24px 18px;
           display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 18px;
+          flex-direction: column;
+          gap: 18px;
         }
-        .id-brand {
+        .profile-id-card {
           display: flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 10px;
-          font-weight: 800;
-          color: var(--gold-bright);
-          letter-spacing: 0.08em;
-        }
-        .id-body {
-          display: flex;
-          align-items: center;
+          flex-direction: column;
           gap: 16px;
-          margin-bottom: 20px;
         }
-        .id-avatar {
-          width: 62px;
-          height: 62px;
-          border-radius: 16px;
-          background: rgba(0, 0, 0, 0.4);
-          border: 2px solid var(--gold-bright);
+        .profile-top-row {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+        }
+        .profile-avatar-circle {
+          width: 58px;
+          height: 58px;
+          border-radius: 50%;
+          background: var(--m3-primary);
+          color: var(--m3-on-primary);
+          font-family: var(--font-family);
+          font-size: 24px;
+          font-weight: 800;
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
         }
-        .cadet-full-name {
+        .profile-display-name {
           font-size: 19px;
-          font-weight: 800;
-          color: #fff;
+          font-weight: 700;
+          color: var(--m3-text-high);
           line-height: 1.2;
         }
-        .cadet-role {
-          font-size: 11.5px;
-          color: var(--gold-bright);
-          font-weight: 600;
-          margin-top: 3px;
+        .profile-role-tag {
+          font-size: 11px;
+          font-weight: 700;
+          color: var(--m3-primary);
+          letter-spacing: 0.05em;
+          margin-top: 4px;
+          display: inline-block;
         }
-        .cadet-contact {
+        .profile-contact-list {
           display: flex;
           flex-direction: column;
-          gap: 3px;
-          margin-top: 8px;
+          gap: 6px;
+          padding-top: 6px;
         }
-        .contact-item {
+        .contact-row {
           display: flex;
           align-items: center;
-          gap: 5px;
-          font-size: 11px;
-          color: var(--text-secondary);
+          gap: 8px;
+          font-size: 12.5px;
+          color: var(--m3-text-medium);
         }
-        .id-footer {
+        .profile-card-footer {
           display: flex;
           justify-content: space-between;
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          border-top: 1px solid var(--m3-outline);
           padding-top: 12px;
+          margin-top: 4px;
         }
-        .id-stat {
+        .badge-item {
           display: flex;
           flex-direction: column;
         }
-        .stat-label {
+        .badge-lbl {
           font-size: 9px;
-          color: var(--text-muted);
           font-weight: 700;
-          letter-spacing: 0.05em;
+          color: var(--m3-text-low);
+          letter-spacing: 0.04em;
         }
-        .stat-val {
-          font-size: 12px;
+        .badge-val {
+          font-size: 12.5px;
           font-weight: 700;
-          color: var(--text-primary);
+          color: var(--m3-text-high);
           margin-top: 2px;
         }
-        .text-gold { color: var(--gold-bright); }
-        .section-header { margin-bottom: 12px; }
-        .section-title {
-          font-size: 15px;
-          font-weight: 700;
-          color: var(--text-primary);
+        .badge-val.highlight {
+          color: var(--m3-primary);
         }
-        .mentor-card { padding: 14px 16px; }
-        .mentor-row {
+        .profile-section {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .section-title {
+          font-size: 14.5px;
+          font-weight: 700;
+          color: var(--m3-text-high);
+          margin-left: 2px;
+        }
+        .mentors-card {
+          padding: 12px 16px;
+        }
+        .mentor-item {
           display: flex;
           align-items: center;
           gap: 12px;
+          padding: 8px 0;
         }
-        .mentor-avatar {
+        .mentor-tag-circle {
           width: 38px;
           height: 38px;
-          border-radius: 10px;
-          background: rgba(212, 175, 55, 0.15);
-          color: var(--gold-bright);
+          border-radius: var(--m3-shape-corner-md);
+          background: var(--m3-primary-container);
+          color: var(--m3-primary);
+          font-size: 11.5px;
           font-weight: 800;
-          font-size: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
+          flex-shrink: 0;
         }
-        .mentor-info h4 {
-          font-size: 13px;
+        .mentor-details h4 {
+          font-size: 13.5px;
           font-weight: 700;
-          color: var(--text-primary);
+          color: var(--m3-text-high);
         }
-        .mentor-info p {
-          font-size: 11px;
-          color: var(--text-muted);
+        .mentor-details p {
+          font-size: 11.5px;
+          color: var(--m3-text-medium);
           margin-top: 2px;
         }
         .mentor-divider {
           height: 1px;
-          background: var(--border-subtle);
-          margin: 12px 0;
+          background: var(--m3-outline);
+          margin: 6px 0;
         }
       `}</style>
     </div>
